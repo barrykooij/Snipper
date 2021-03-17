@@ -1,0 +1,5 @@
+﻿  Abbreviation.cpp
+C:\Users\Barry\source\repos\Snipper\Snipper\Abbreviation.cpp(23,9): warning C4244: 'argument': conversion from 'float' to 'DWORD', possible loss of data
+  Snipper.cpp
+  Generating Code...
+  Snipper.vcxproj -> C:\Users\Barry\source\repos\Snipper\Debug\Snipper.exe
