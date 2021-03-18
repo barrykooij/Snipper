@@ -35,5 +35,6 @@
 /x64/
 /Debug/
 /Sniper/Debug/
-/Sniper/x64/
+/Sniper/Debug/x64/
+/Sniper/x64/Debug/
 /.vs/
