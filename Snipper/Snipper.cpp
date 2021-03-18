@@ -2,12 +2,12 @@
 #include <iostream>
 #include <Windows.h>
 #include "Snippets.h"
+
 int main()
 {
     std::cout << "--------------------------------------------------------------------------" << std::endl;
     std::cout << "                          Snipper" << std::endl;
     std::cout << "--------------------------------------------------------------------------" << std::endl;
-    std::cout << "Looking for key input" << std::endl;
 
     Snippets snippets;
 
@@ -23,11 +23,7 @@ int main()
 
         if (GetAsyncKeyState(VK_OEM_1) & 1)
         {
-            std::string abbr = snippets.CatchChars();
-            if (abbr != "")
-            {
-                snippets.HandleAbbr(abbr);
-            }
+            snippets.Listen();
         }
 
         Sleep(5);

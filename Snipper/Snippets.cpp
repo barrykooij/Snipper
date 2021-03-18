@@ -2,15 +2,119 @@
 
 Snippets::Snippets()
 {
-	std::cout << "constructor called" << std::endl;
 
+	// set correct path
+	if (!SetDirectoryPath())
+	{
+		std::cout << "ERROR: Failed to load snippet directory" << std::endl;
+		return;
+	}
+
+	// create dir
+	CreateSnippetDir();
+
+	// Load Snippets
+	LoadSnippetFiles();
+
+	/*
 	this->snippets = {
 		{"AE", "Please let me know if there's anything else I can help you with"},
 		{"REFUND", "I just did a full refund of your payment. Please note that your license key will no longer be valid and can't be used to receive updates and support anymore.\n\nI'm sorry to see you go but hope to welcome you as a customer again one day. Please let me know if you've got any remaining questions about the payment or the order.\n\nPlease find the credit invoice attached."},
 	};
+	*/
 }
 
-std::string Snippets::CatchChars()
+bool Snippets::SetDirectoryPath()
+{
+
+	LPWSTR wszPath = NULL;
+	HRESULT hr;
+
+	hr = SHGetKnownFolderPath(FOLDERID_Documents, KF_FLAG_CREATE, NULL, &wszPath);
+	if (SUCCEEDED(hr))
+	{
+		_bstr_t bstrPath(wszPath);
+		std::string strPath((char*)bstrPath);
+
+		strPath += "\\Snipper\\";
+
+		this->directoryPath = strPath;
+
+		return true;
+	}
+
+	return false;
+}
+
+void Snippets::CreateSnippetDir()
+{
+
+	std::wstring stemp = std::wstring(this->directoryPath.begin(), this->directoryPath.end());
+	LPCWSTR sw = stemp.c_str();
+
+	if (CreateDirectory(sw, NULL) || ERROR_ALREADY_EXISTS == GetLastError())
+	{
+	}
+}
+
+void Snippets::LoadSnippetFiles()
+{
+	int snippetsLoaded = 0;
+
+	LPWSTR wszPath = NULL;
+	HRESULT hr;
+
+	hr = SHGetKnownFolderPath(FOLDERID_Documents, KF_FLAG_CREATE, NULL, &wszPath);
+	if (SUCCEEDED(hr))
+	{
+	
+		std::ifstream infile;
+		std::string line, snippet;
+
+		// convert to string
+		_bstr_t bstrPath(wszPath);
+		std::string strPath((char*)bstrPath);
+
+		strPath += "\\Snipper\\";
+
+		for (auto& file : fs::directory_iterator{ strPath })  //loop through the current folder
+		{
+			snippet = "";
+
+			infile.open(file.path());
+			while (std::getline(infile, line))
+			{
+				if (snippet != "")
+					snippet += "\n";
+
+				//snippet += line.c_str();
+				snippet.append(line.c_str());
+			}
+
+			// close file
+			infile.close();
+
+			// insert snippet
+			this->snippets.insert(std::pair<std::string, std::string>(GetAbbreviation(file.path()), snippet));
+
+			// incr counter
+			snippetsLoaded++;
+		}
+	}
+
+	std::cout << "Snippets loaded: " << snippetsLoaded << std::endl;
+}
+
+std::string Snippets::GetAbbreviation(std::filesystem::path p)
+{
+	std::string abbr = p.stem().string();
+
+	std::transform(abbr.begin(), abbr.end(), abbr.begin(), ::toupper);
+
+	return abbr;
+}
+
+void Snippets::Listen()
 {
 	this->isListening = true;
 
@@ -25,9 +129,19 @@ std::string Snippets::CatchChars()
 		{
 			if (GetAsyncKeyState(i) & 1)
 			{
+				// push key in chars list
 				char c = i;
 				this->chars.push_back(c);
 				this->checksDone = 0;
+
+				// convert the chars to string
+				std::string abbr(chars.begin(), chars.end());
+
+				// try to handle the abbr
+				if (this->HandleAbbr(abbr))
+				{
+					this->isListening = false;
+				}
 			}
 		}
 
@@ -35,14 +149,10 @@ std::string Snippets::CatchChars()
 		Sleep(checkInterval);
 	}
 
-	std::string abbr(chars.begin(), chars.end());
-
 	this->isListening = false;
-
-	return abbr;
 }
 
-void Snippets::HandleAbbr(std::string abbr)
+bool Snippets::HandleAbbr(std::string abbr)
 {
 	// print snippet
 	std::map<std::string, std::string>::iterator it = snippets.find(abbr);
@@ -54,10 +164,14 @@ void Snippets::HandleAbbr(std::string abbr)
 			PressBackspace();
 		}
 
-		Sleep(10);
+		Sleep(5);
 
 		this->PrintSnippet(it->second);
+
+		return true;
 	}
+
+	return false;
 }
 
 void Snippets::PrintSnippet(std::string snippet)
@@ -68,8 +182,6 @@ void Snippets::PrintSnippet(std::string snippet)
 	for (auto& letter : chars) {
 		PressKey(letter);
 	}
-
-	std::cout << std::endl;
 }
 
 void Snippets::PressKey(char letter)

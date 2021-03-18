@@ -13,4 +13,10 @@
 #include <vector>
 #include <map>
 #include <thread>
+#include <filesystem>
+#include <fstream>
+#include <shlobj.h>//for knownFolder
+#include <winerror.h> //for HRESULT
+#include <comutil.h> //for _bstr_t (used in the string conversion)
+#include <string>
 #endif //PCH_H
