@@ -19,4 +19,6 @@
 #include <winerror.h> //for HRESULT
 #include <comutil.h> //for _bstr_t (used in the string conversion)
 #include <string>
+#include <thread>
+#include <strsafe.h>
 #endif //PCH_H

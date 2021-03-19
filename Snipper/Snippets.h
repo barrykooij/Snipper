@@ -35,9 +35,13 @@ private:
 	void CreateSnippetDir();
 	void LoadSnippetFiles();
 
+	bool listenLoopActive = false;
+
 	std::string GetAbbreviation(std::filesystem::path p);
 public:
 	Snippets();
+	void ListenLoop();
+	void StopListenLoop();
 	void Listen();
 	bool HandleAbbr(std::string abbr);
 	void PrintSnippet(std::string snippet);

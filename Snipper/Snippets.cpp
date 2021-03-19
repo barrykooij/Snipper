@@ -114,6 +114,25 @@ std::string Snippets::GetAbbreviation(std::filesystem::path p)
 	return abbr;
 }
 
+void Snippets::ListenLoop()
+{
+	this->listenLoopActive = true;
+	while (this->listenLoopActive)
+	{
+		if (GetAsyncKeyState(VK_OEM_1) & 1)
+		{
+			Listen();
+		}
+
+		Sleep(5);
+	}
+}
+
+void Snippets::StopListenLoop()
+{
+	this->listenLoopActive = false;
+}
+
 void Snippets::Listen()
 {
 	this->isListening = true;
