@@ -54,6 +54,23 @@ END
 // remains consistent on all systems.
 ICON_SNIPPER            ICON                    "icon2.ico"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU3 MENU
+BEGIN
+    POPUP "Test"
+    BEGIN
+        MENUITEM "Open Snippet Folder",         ID_TEST_OPENSNIPPETFOLDER
+        MENUITEM "Reload Snippets",             ID_TEST_RELOADSNIPPETS
+        MENUITEM SEPARATOR
+        MENUITEM "Exit",                        ID_TEST_EXIT40005
+    END
+END
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

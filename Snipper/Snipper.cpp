@@ -5,6 +5,7 @@
 #include <strsafe.h>
 #include "Snippets.h"
 #include "resource1.h"
+#include "windowsx.h"
 
 #define APPWM_ICONNOTIFY (WM_APP + 1)
 
@@ -28,8 +29,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_LBUTTONUP:
             //...
             break;
-        case WM_RBUTTONUP:
-            //...
+        case WM_RBUTTONUP:            
+            POINT pt;
+            GetCursorPos(&pt);
+
+            HMENU hMenu = LoadMenu(NULL, MAKEINTRESOURCE(IDR_MENU3));
+            hMenu = GetSubMenu(hMenu, 0);
+            TrackPopupMenu(hMenu, TPM_RIGHTBUTTON | TPM_BOTTOMALIGN, pt.x, pt.y, 0, hwnd, NULL);
+
             break;
         }
         break;
