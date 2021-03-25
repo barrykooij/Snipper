@@ -60,14 +60,14 @@ ICON_SNIPPER            ICON                    "icon2.ico"
 // Menu
 //
 
-IDR_MENU3 MENU
+IDR_MENU3 MENUEX
 BEGIN
-    POPUP "Test"
+    POPUP "Test",                           65535,MFT_STRING,MFS_ENABLED
     BEGIN
-        MENUITEM "Open Snippet Folder",         ID_TEST_OPENSNIPPETFOLDER
-        MENUITEM "Reload Snippets",             ID_TEST_RELOADSNIPPETS
-        MENUITEM SEPARATOR
-        MENUITEM "Exit",                        ID_TEST_EXIT40005
+        MENUITEM "Open Snippet Folder",         ID_OPENSNIPPETFOLDER,MFT_STRING | MFT_RIGHTJUSTIFY,MFS_ENABLED
+        MENUITEM "Reload Snippets",             ID_RELOADSNIPPETS,MFT_STRING,MFS_ENABLED
+        MENUITEM MFT_SEPARATOR
+        MENUITEM "Exit",                        ID_EXIT,MFT_STRING,MFS_ENABLED
     END
 END
 

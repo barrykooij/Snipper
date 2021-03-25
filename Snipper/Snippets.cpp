@@ -15,13 +15,6 @@ Snippets::Snippets()
 
 	// Load Snippets
 	LoadSnippetFiles();
-
-	/*
-	this->snippets = {
-		{"AE", "Please let me know if there's anything else I can help you with"},
-		{"REFUND", "I just did a full refund of your payment. Please note that your license key will no longer be valid and can't be used to receive updates and support anymore.\n\nI'm sorry to see you go but hope to welcome you as a customer again one day. Please let me know if you've got any remaining questions about the payment or the order.\n\nPlease find the credit invoice attached."},
-	};
-	*/
 }
 
 bool Snippets::SetDirectoryPath()
@@ -47,7 +40,6 @@ bool Snippets::SetDirectoryPath()
 
 void Snippets::CreateSnippetDir()
 {
-
 	std::wstring stemp = std::wstring(this->directoryPath.begin(), this->directoryPath.end());
 	LPCWSTR sw = stemp.c_str();
 
@@ -59,6 +51,9 @@ void Snippets::CreateSnippetDir()
 void Snippets::LoadSnippetFiles()
 {
 	int snippetsLoaded = 0;
+
+	// clear current list
+	this->snippets.clear();
 
 	LPWSTR wszPath = NULL;
 	HRESULT hr;
@@ -102,6 +97,14 @@ void Snippets::LoadSnippetFiles()
 	}
 
 	std::cout << "Snippets loaded: " << snippetsLoaded << std::endl;
+}
+
+void Snippets::OpenSnippetDirectory()
+{
+	std::wstring stemp = std::wstring(this->directoryPath.begin(), this->directoryPath.end());
+	LPCWSTR sw = stemp.c_str();
+
+	ShellExecute(NULL, L"open", sw, NULL, NULL, SW_SHOWDEFAULT);
 }
 
 std::string Snippets::GetAbbreviation(std::filesystem::path p)

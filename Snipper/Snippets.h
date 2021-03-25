@@ -33,7 +33,6 @@ private:
 
 	bool SetDirectoryPath();
 	void CreateSnippetDir();
-	void LoadSnippetFiles();
 
 	void ResetListen();
 
@@ -42,6 +41,8 @@ private:
 	std::string GetAbbreviation(std::filesystem::path p);
 public:
 	Snippets();
+	void OpenSnippetDirectory();
+	void LoadSnippetFiles();
 	void ListenLoop();
 	void StopListenLoop();
 	void Listen();

@@ -13,6 +13,8 @@ const LPCWSTR g_szClassName = L"snipperClass";
 
 NOTIFYICONDATA nid = {};
 
+Snippets snippets;
+
 void DestroyApp()
 {
     // clean up shell icon
@@ -50,6 +52,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         }
         break;
     }
+    case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+        LPCWSTR sw;
+        // Parse the menu selections:
+        switch (wmId)
+        {
+        case ID_OPENSNIPPETFOLDER:
+            snippets.OpenSnippetDirectory();
+            break;
+        case ID_RELOADSNIPPETS:
+            snippets.LoadSnippetFiles();
+            break;
+        case ID_EXIT:
+            DestroyApp();
+            PostQuitMessage(0);
+            break;
+        default:
+            break;
+        }
+    }
     case WM_PAINT:
         hdc = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rect);
@@ -72,8 +95,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow)
 {
-    Snippets snippets;
-
     std::thread snippetListenThread(&Snippets::ListenLoop, &snippets);
 
     WNDCLASSEX wc;
