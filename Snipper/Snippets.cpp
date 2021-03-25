@@ -26,7 +26,6 @@ Snippets::Snippets()
 
 bool Snippets::SetDirectoryPath()
 {
-
 	LPWSTR wszPath = NULL;
 	HRESULT hr;
 
@@ -124,7 +123,7 @@ void Snippets::ListenLoop()
 			Listen();
 		}
 
-		Sleep(5);
+		Sleep(1);
 	}
 }
 
@@ -133,17 +132,38 @@ void Snippets::StopListenLoop()
 	this->listenLoopActive = false;
 }
 
-void Snippets::Listen()
+void Snippets::ResetListen()
 {
-	this->isListening = true;
-
 	this->checksDone = 0;
 
 	// set chars typed to empty
 	this->chars = {};
+}
+
+void Snippets::Listen()
+{
+	this->isListening = true;
+
+	ResetListen();
 
 	while (this->isListening && checksDone < totalChecks)
 	{
+
+		// if you press the ; key while listening for a abbr -> reset and start over
+		if (GetAsyncKeyState(VK_OEM_1) & 1)
+		{
+			ResetListen();
+		}
+
+		// on backspace remove a char from this->chars
+		if (GetAsyncKeyState(VK_BACK) & 1)
+		{
+			if (this->chars.size() > 0)
+			{
+				this->chars.pop_back();
+			}
+		}
+
 		for (int i = 'A'; i <= 'Z'; i++) 
 		{
 			if (GetAsyncKeyState(i) & 1)
@@ -183,7 +203,7 @@ bool Snippets::HandleAbbr(std::string abbr)
 			PressBackspace();
 		}
 
-		Sleep(5);
+		Sleep(500);
 
 		this->PrintSnippet(it->second);
 
@@ -198,8 +218,14 @@ void Snippets::PrintSnippet(std::string snippet)
 	std::vector<char> chars(snippet.begin(), snippet.end());
 	chars.push_back('\0'); // Make sure we are null-terminated
 
+	int i = 0;
 	for (auto& letter : chars) {
+
+		if ((i % 20) == 0)
+			Sleep(1);
+
 		PressKey(letter);
+		i++;
 	}
 }
 
@@ -241,6 +267,7 @@ void Snippets::PressEnter()
 
 	ip.ki.dwExtraInfo = 0;
 	SendInput(1, &ip, sizeof(INPUT));
+	Sleep(1);
 }
 
 void Snippets::PressBackspace()

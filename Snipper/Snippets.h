@@ -16,7 +16,7 @@ class Snippets
 {
 private:
 	float timeToType = 500;
-	float checkInterval = 5;
+	float checkInterval = 1;
 	float totalChecks = timeToType / checkInterval;
 	int checksDone = 0;
 
@@ -34,6 +34,8 @@ private:
 	bool SetDirectoryPath();
 	void CreateSnippetDir();
 	void LoadSnippetFiles();
+
+	void ResetListen();
 
 	bool listenLoopActive = false;
 

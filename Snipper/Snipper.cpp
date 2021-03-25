@@ -11,6 +11,14 @@
 
 const LPCWSTR g_szClassName = L"snipperClass";
 
+NOTIFYICONDATA nid = {};
+
+void DestroyApp()
+{
+    // clean up shell icon
+    Shell_NotifyIcon(NIM_DELETE, &nid);
+}
+
 // Step 4: the Window Procedure
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -28,6 +36,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
         case WM_LBUTTONUP:
             //...
+
             break;
         case WM_RBUTTONUP:            
             POINT pt;
@@ -51,6 +60,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         DestroyWindow(hwnd);
         break;
     case WM_DESTROY:
+        DestroyApp();
         PostQuitMessage(0);
         break;
     default:
@@ -62,7 +72,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow)
 {
-
     Snippets snippets;
 
     std::thread snippetListenThread(&Snippets::ListenLoop, &snippets);
@@ -108,18 +117,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return 0;
     }
 
-    ShowWindow(hwnd, nCmdShow);
-    UpdateWindow(hwnd);
+    //ShowWindow(hwnd, nCmdShow);
+    //UpdateWindow(hwnd);
 
     // Shell icon start
-
-    /*
-    HICON hIcon = static_cast<HICON>(LoadImage(NULL,
-        TEXT("gui\\sample.ico"),
-        IMAGE_ICON,
-        0, 0,
-        LR_DEFAULTCOLOR | LR_SHARED | LR_DEFAULTSIZE | LR_LOADFROMFILE));
-    */
 
     HICON hIcon = static_cast<HICON>(::LoadImage(hInstance,
         MAKEINTRESOURCE(ICON_SNIPPER),
@@ -131,7 +132,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 
     //Notification
-    NOTIFYICONDATA nid = {};
+    nid = {};
     nid.cbSize = sizeof(nid);
     nid.hWnd = hwnd;
     nid.uID = 1;
@@ -144,8 +145,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     // Show the notification.
     Shell_NotifyIcon(NIM_ADD, &nid);
-
-// shell icon stop
+    // shell icon stop
 
     // Step 3: The Message Loop
     while (GetMessage(&Msg, NULL, 0, 0) > 0)
